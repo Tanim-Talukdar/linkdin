@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import userRoutes from "./src/routes/userRoutes.js"
 
 if (process.env.NODE_ENV != "production"){
 dotenv.config();
@@ -24,6 +25,8 @@ main().then(()=>{
 }).catch((err) => {
     console.log(err);
 })
+
+app.use("/api/v1", [userRoutes]);
 
 app.get("/", (req,res) => {
     res.send("testing done");
