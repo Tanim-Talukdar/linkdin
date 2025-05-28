@@ -3,6 +3,7 @@ import Profile from "../models/profileModel.js"
 import bcrypt from "bcrypt";
 // import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import crypto from "crypto"
 dotenv.config();
 
 // const JwtSecret = process.env.JWT_SECRET ;
@@ -12,9 +13,12 @@ export const register = async (req, res) => {
     
     if(!name || !email || !password || !username ) return res.status(400).json({message: "All field are required"});
 
-    const existinguser = await User.find({email});
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) return res.status(400).json({ message: "Email already in use" });
 
-    if(!existinguser) return res.status(400).json({message: "user already exists"});
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) return res.status(400).json({ message: "Username already taken" });
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -41,31 +45,30 @@ export const login = async (req, res) => {
 
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(httpStatus.BAD_REQUEST).json({ message: "Email and password are required" });
+        return res.status(404).json({ message: "Email and password are required" });
     }
 
     const user = await User.findOne({ email }); 
     if (!user) {
-        return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid email or password" });
+        return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid email or password" });
+        return res.status(400).json({ message: "Invalid email or password" });
     }
-
     
-    const token = jwt.sign(
-        { id: user._id, email: user.email, role: user.role || "user" },
-        JwtSecret,
-        { expiresIn: "1h" , algorithm: 'HS256'}
-    );
-    console.log(JwtSecret);
-    console.log("User Logged In");
+    const CryptoToken = crypto.randomBytes(32).toString("hex")
+    
+    // const token = jwt.sign(
+    //     { id: user._id, email: user.email, role: user.role || "user" },
+    //     JwtSecret,
+    //     { expiresIn: "1h" , algorithm: 'HS256'}
+    // );
 
     
     return res.status(httpStatus.OK).json({
         message: "User logged in successfully",
-        token,
+        // token,
     });
 };
