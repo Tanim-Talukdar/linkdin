@@ -1,3 +1,4 @@
+### Register
 Post http://localhost:5001/api/v1/register HTTP/1.1
 Content-Type: application/json
 
@@ -7,3 +8,48 @@ Content-Type: application/json
     "email": "testuser121@example.com",
     "name": "Test User1212"
 }
+
+### Login
+Post http://localhost:5001/api/v1/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "password": "testpassword1212",
+    "email": "testuser121@example.com"
+}
+
+###  get_user_profile
+GET  http://localhost:5001/api/v1/get_user_profile HTTP/1.1
+Content-Type: application/json
+
+{
+    "CryptoToken": "51b4c3711e23b8df10cfc2a51029648e8959e42bfce1920750c04381dfe12de0"
+}
+
+### update_profile_data
+POST   http://localhost:5001/api/v1/update_profile_data HTTP/1.1
+Content-Type: application/json
+
+{
+    "CryptoToken": "51b4c3711e23b8df10cfc2a51029648e8959e42bfce1920750c04381dfe12de0",
+    "bio": "Testing Going Wrong",
+    "currentPost": "CTO",
+    "pastWork": [
+        {
+            "company": "Microsoft",
+            "position": "CTO",
+            "years": "2+"
+        }
+    ],
+    "education": [
+        {
+            "school": "BUET",
+            "degree": "B.Tech",
+            "fieldOfStudy": "2015-2019"
+        }
+    ]
+}
+
+###get_all_user
+GET http://localhost:5001/api/v1/get_all_user HTTP/1.1
+Content-Type: application/json

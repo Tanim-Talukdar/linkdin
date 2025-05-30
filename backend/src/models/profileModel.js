@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const educationSchema = new mongoose.Schema({
-    School: {
+    school: {
         type: String,
         default: ''
     },
@@ -9,7 +9,7 @@ const educationSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    fieldOfStudey: {
+    fieldOfStudy: {
         type: String,
         default: '',
     }
@@ -20,7 +20,7 @@ const workSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    possition: {
+    position: {
         type: String,
         default: ''
     },
@@ -31,6 +31,10 @@ const workSchema = new mongoose.Schema({
 });
 
 const profileSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     bio: {
         type: String,
         default: ''

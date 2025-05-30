@@ -35,7 +35,9 @@ export const register = async (req, res) => {
     //     JwtSecret,
     //     { expiresIn: '1h', algorithm: 'HS256' }
     // );
-    const profile = new Profile({userid: user._id})
+    const profile = new Profile({userId: user._id})
+    await profile.save();
+
     return res.status(201).json({
         message: "User created successfully",
     });
@@ -60,6 +62,8 @@ export const login = async (req, res) => {
     
     const CryptoToken = crypto.randomBytes(32).toString("hex")
     
+    user.CryptoToken = CryptoToken;
+    await user.save();
     // const token = jwt.sign(
     //     { id: user._id, email: user.email, role: user.role || "user" },
     //     JwtSecret,
@@ -67,8 +71,77 @@ export const login = async (req, res) => {
     // );
 
     
-    return res.status(httpStatus.OK).json({
+    return res.status(201).json({
         message: "User logged in successfully",
-        // token,
+        CryptoToken
     });
 };
+
+
+export const uploadProfilePicture = async (req,res) => {
+    const { CryptoToken } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is required" });
+
+    const user = await User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    
+
+    const path = req.file.path;
+    const filename = req.file.filename;
+    user.profilePicture = {path, filename};
+
+    await user.save();
+
+    return res.status(200).json({message: "profile picture updated"})
+}
+
+export const updateUserProfile = async (req, res) => {
+    const { CryptoToken, ...newUserdata } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is unavailbe"});
+
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const {username, email} = newUserdata;
+    const existingUser = await User.findOne({$or: [{username}, {email}]});
+    if (existingUser || String(existingUser._id) !== String(user._id)) return res.status(400).json({message: "user already exists"});
+
+    Object.assign(user, existingUser);
+    await user.save();
+
+    return res.status(200).json({message: "user update successfully"})
+}
+
+export const getUserAndProfile = async (req, res) => {
+    const { CryptoToken } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
+
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const userProfile = await Profile.findOne({userID: user._id}).populate('userId', 'name email username profilePicture');
+    return  res.json(userProfile);
+
+}
+
+export const UpdateProfileData =async (req,res) => {
+    const { CryptoToken, ...newProfileData } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is  not available" });
+
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const userProfile = await Profile.findOne({userID: user._id});
+    Object.assign(userProfile, newProfileData)
+
+    await userProfile.save();
+    return res.status(200).json({messsage: "profile update done"});
+}
+
+export const getAllUser = async (req,res) => {
+    const profile = await Profile.find({}).populate('userId', 'name email username profilePicture');
+    return res.status(200).json({profile});
+}

@@ -15,7 +15,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'crimatch',
+        folder: 'Linkydin',
         allowedFormats: ["png", "jpg", "jpeg"],
     },
     });
