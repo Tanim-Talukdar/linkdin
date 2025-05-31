@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({limit: "40kb"}));
 app.use(express.urlencoded({limit: "40kb", extended: true}));
+app.use(express.static("uploads"));
 
 const port = process.env.Port || 8000;
 const db = process.env.MONGO_DB_URL;

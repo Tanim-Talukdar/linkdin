@@ -3,7 +3,8 @@ import Profile from "../models/profileModel.js"
 import bcrypt from "bcrypt";
 // import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import crypto from "crypto"
+import crypto from "crypto";
+import { convertUserDataTOPDF } from "../utils/CreatePdf.js";
 dotenv.config();
 
 // const JwtSecret = process.env.JWT_SECRET ;
@@ -91,7 +92,8 @@ export const uploadProfilePicture = async (req,res) => {
 
     const path = req.file.path;
     const filename = req.file.filename;
-    user.profilePicture = {path, filename};
+    user.profilePicture.path = path;
+    user.profilePicture.filename = filename;
 
     await user.save();
 
@@ -144,4 +146,12 @@ export const UpdateProfileData =async (req,res) => {
 export const getAllUser = async (req,res) => {
     const profile = await Profile.find({}).populate('userId', 'name email username profilePicture');
     return res.status(200).json({profile});
+}
+
+export const downloadUserInfo = async (req, res) => {
+    const userId = req.query.id;
+
+    const userProfile = await Profile.findOne({userId}).populate('userId', 'name email username profilePicture');
+    const outputPath = await convertUserDataTOPDF(userProfile);
+    return res.json({"message": outputPath})
 }

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { getAllUser, getUserAndProfile, login, register, UpdateProfileData, updateUserProfile, uploadProfilePicture } from "../controllers/userController.js";
+import { downloadUserInfo, getAllUser, getUserAndProfile, login, register, UpdateProfileData, updateUserProfile, uploadProfilePicture } from "../controllers/userController.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import multer from "multer";
 import fs from "fs";
@@ -31,6 +31,7 @@ router.post("/user_Profile_update", wrapAsync(updateUserProfile));
 router.get("/get_user_profile", wrapAsync(getUserAndProfile));
 router.post("/update_profile_data", wrapAsync(UpdateProfileData));
 router.get("/get_All_User", wrapAsync(getAllUser));
+router.get("/user/download_resume", wrapAsync(downloadUserInfo))
 
 
 export default router ;
