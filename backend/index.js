@@ -34,4 +34,4 @@ app.get("/", (req,res) => {
     
 })
 
-app.listen(port, (req,res) => {console.log(`app is running on http://localhost:${port} `)});
+app.listen(port, (req,res) => {console.log(`app is running on http://localhost:${port}/api/v1`)});

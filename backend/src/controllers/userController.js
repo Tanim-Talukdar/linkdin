@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import crypto from "crypto";
 import { convertUserDataTOPDF } from "../utils/CreatePdf.js";
+import ConnectionModel from "../models/connections.js";
+import { connect } from "http2";
 dotenv.config();
 
 // const JwtSecret = process.env.JWT_SECRET ;
@@ -154,4 +156,70 @@ export const downloadUserInfo = async (req, res) => {
     const userProfile = await Profile.findOne({userId}).populate('userId', 'name email username profilePicture');
     const outputPath = await convertUserDataTOPDF(userProfile);
     return res.json({"message": outputPath})
+}
+
+export const sendConnectionRequest = async (req, res) => {
+    const { CryptoToken, connectionId } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is  not available" });
+
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const connectionUser = User.findOne({connectionId});
+    if(!connectionUser) return res.status(404).json({message: "User Not Found"});
+
+    const existingRequest = await ConnectionModel.findOne({
+        userId: user._id,
+        connectionId: connectionUser._id
+    })
+    if(!existingRequest) return res.status(404).json({message: "already exist"});
+    const newConnection = new ConnectionModel({
+        userId: user._id,
+        connectionId: connectionUser._id
+    })
+    await newConnection.save();
+    return res.status(200).json({message: "connection request sent"});
+}
+
+export const getSentConnetion = async (req, res) => {
+    const { CryptoToken } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
+
+    const user = User.find({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const connectionProfile = await ConnectionModel.find({userID: user._id}).populate('userId', 'name email username profilePicture');
+    return  res.json(connectionProfile);
+
+}
+
+export const myConnections = async (req, res) => {
+    const { CryptoToken } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
+
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const connectionProfile = await ConnectionModel.find({connectionId: user._id}).populate('userId', 'name email username profilePicture');
+    return  res.json(connectionProfile);
+
+}
+
+export const acceptConnections = async (req, res) => {
+    const { CryptoToken,requestId, action_type } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
+
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const connection = await ConnectionModel.find({_Id: requestId})
+    if(!connection) return res.status(404).json({message: "Connection Not Found"});
+    if(connection.userId.toString() !== user._id.toString()) return res.status(404).json({message: "invalid request"});
+    if(action_type === "accept") {
+        connection.status_accepted= true
+        await connection.save();
+        return res.status(200).json({message: "connection accepted"});
+    }
+    return  res.json({message: "connection not accepted"});
+
 }
