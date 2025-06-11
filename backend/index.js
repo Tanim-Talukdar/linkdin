@@ -6,6 +6,7 @@ import userRoutes from "./src/routes/userRoutes.js"
 import authRoutes from "./src/routes/authRoutes.js";
 import profileRoutes from "./src/routes/profileRoutes.js";
 import connectionRoutes from "./src/routes/connectionRoutes.js";
+import postRoutes from "./src/routes/postRoutes.js";
 
 
 if (process.env.NODE_ENV != "production"){
@@ -35,6 +36,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/connection", connectionRoutes);
+app.use("/api/v1", postRoutes)
 
 
 app.get("/", (req,res) => {
