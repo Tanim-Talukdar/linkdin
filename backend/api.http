@@ -1,55 +1,147 @@
-### Register
-Post http://localhost:5001/api/v1/register HTTP/1.1
+# ### Register
+# Post http://localhost:5001/api/v1/register HTTP/1.1
+# Content-Type: application/json
+
+# {
+#     "username": "testuser121",
+#     "password": "testpassword1212",
+#     "email": "testuser121@example.com",
+#     "name": "Test User1212"
+# }
+
+# ### Login
+# Post http://localhost:5001/api/v1/login HTTP/1.1
+# Content-Type: application/json
+
+# {
+#     "password": "testpassword1212",
+#     "email": "testuser121@example.com"
+# }
+
+# ###  get_user_profile
+# GET  http://localhost:5001/api/v1/get_user_profile HTTP/1.1
+# Content-Type: application/json
+
+# {
+#     "CryptoToken": "51b4c3711e23b8df10cfc2a51029648e8959e42bfce1920750c04381dfe12de0"
+# }
+
+# ### update_profile_data
+# POST   http://localhost:5001/api/v1/update_profile_data HTTP/1.1
+# Content-Type: application/json
+
+# {
+#     "CryptoToken": "51b4c3711e23b8df10cfc2a51029648e8959e42bfce1920750c04381dfe12de0",
+#     "bio": "Testing Going Wrong",
+#     "currentPost": "CTO",
+#     "pastWork": [
+#         {
+#             "company": "Microsoft",
+#             "position": "CTO",
+#             "years": "2+"
+#         }
+#     ],
+#     "education": [
+#         {
+#             "school": "BUET",
+#             "degree": "B.Tech",
+#             "fieldOfStudy": "2015-2019"
+#         }
+#     ]
+# }
+
+# ###get_all_user
+# GET http://localhost:5001/api/v1/get_all_user HTTP/1.1
+# Content-Type: application/json
+
+
+### Register a new user
+POST http://localhost:5001/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "username": "testuser121",
-    "password": "testpassword1212",
-    "email": "testuser121@example.com",
-    "name": "Test User1212"
+  "username": "testuser123",
+  "password": "testpassword123",
+  "email": "testuser123@example.com",
+  "name": "Test User"
 }
 
 ### Login
-Post http://localhost:5001/api/v1/login HTTP/1.1
+POST http://localhost:5001/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "password": "testpassword1212",
-    "email": "testuser121@example.com"
+  "email": "testuser123@example.com",
+  "password": "testpassword123"
 }
 
-###  get_user_profile
-GET  http://localhost:5001/api/v1/get_user_profile HTTP/1.1
+### Get user profile
+GET http://localhost:5001/api/v1/profile/get
 Content-Type: application/json
 
 {
-    "CryptoToken": "51b4c3711e23b8df10cfc2a51029648e8959e42bfce1920750c04381dfe12de0"
+    "CryptoToken": "54b1e397a5833a04460a40f929d0b215ed31669099e54f15d9262d7297b15fa3"
 }
 
-### update_profile_data
-POST   http://localhost:5001/api/v1/update_profile_data HTTP/1.1
+### Update profile data
+POST http://localhost:5001/api/v1/profile/update_data
 Content-Type: application/json
 
 {
-    "CryptoToken": "51b4c3711e23b8df10cfc2a51029648e8959e42bfce1920750c04381dfe12de0",
-    "bio": "Testing Going Wrong",
-    "currentPost": "CTO",
-    "pastWork": [
-        {
-            "company": "Microsoft",
-            "position": "CTO",
-            "years": "2+"
-        }
-    ],
-    "education": [
-        {
-            "school": "BUET",
-            "degree": "B.Tech",
-            "fieldOfStudy": "2015-2019"
-        }
-    ]
+  "CryptoToken": "54b1e397a5833a04460a40f929d0b215ed31669099e54f15d9262d7297b15fa3",
+  "bio": "Hello, I’m a test user!",
+  "currentPost": "Developer",
+  "pastWork": [
+    {
+      "company": "Google",
+      "position": "Engineer",
+      "years": "2"
+    }
+  ],
+  "education": [
+    {
+      "school": "MIT",
+      "degree": "BSc",
+      "fieldOfStudy": "CS 2010-2014"
+    }
+  ]
 }
 
-###get_all_user
-GET http://localhost:5001/api/v1/get_all_user HTTP/1.1
+### Upload Profile Picture (form-data required)
+POST http://localhost:5001/api/v1/profile/upload
+Content-Type: multipart/form-data
+
+# ⚠️ This will only work using REST Client UI with file picker
+
+### Get All Users
+GET http://localhost:5001/api/v1/user/all
+
+### Download Resume
+GET http://localhost:5001/api/v1/user/download_resume
+CryptoToken: YOUR_JWT_TOKEN_HERE
+
+### Send Connection Request
+POST http://localhost:5001/api/v1/connection/send_connection_request
 Content-Type: application/json
+
+{
+  "CryptoToken": "YOUR_JWT_TOKEN_HERE",
+  "receiverId": "USER_ID_TO_CONNECT_WITH"
+}
+
+### View My Connections
+GET http://localhost:5001/api/v1/connection/my_connection
+CryptoToken: YOUR_JWT_TOKEN_HERE
+
+### View Sent Requests
+GET http://localhost:5001/api/v1/connection/get_sent_connection
+CryptoToken: YOUR_JWT_TOKEN_HERE
+
+### Accept Connection
+POST http://localhost:5001/api/v1/connection/accept_connection
+Content-Type: application/json
+
+{
+  "CryptoToken": "YOUR_JWT_TOKEN_HERE",
+  "senderId": "SENDER_USER_ID"
+}

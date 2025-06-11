@@ -106,7 +106,7 @@ export const updateUserProfile = async (req, res) => {
     const { CryptoToken, ...newUserdata } = req.body;
     if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is unavailbe"});
 
-    const user = User.findOne({CryptoToken});
+    const user = await User.findOne({CryptoToken});
     if(!user) return res.status(404).json({message: "User Not Found"});
 
     const {username, email} = newUserdata;
@@ -123,22 +123,22 @@ export const getUserAndProfile = async (req, res) => {
     const { CryptoToken } = req.body;
     if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
 
-    const user = User.findOne({CryptoToken});
+    const user = await User.findOne({CryptoToken});
     if(!user) return res.status(404).json({message: "User Not Found"});
 
-    const userProfile = await Profile.findOne({userID: user._id}).populate('userId', 'name email username profilePicture');
+    const userProfile = await Profile.findOne({userId: user._id}).populate('userId', 'name email username profilePicture');
     return  res.json(userProfile);
 
 }
 
-export const UpdateProfileData =async (req,res) => {
+export const UpdateProfileData = async (req,res) => {
     const { CryptoToken, ...newProfileData } = req.body;
     if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is  not available" });
 
-    const user = User.findOne({CryptoToken});
+    const user = await User.findOne({CryptoToken});
     if(!user) return res.status(404).json({message: "User Not Found"});
 
-    const userProfile = await Profile.findOne({userID: user._id});
+    const userProfile = await Profile.findOne({userId: user._id});
     Object.assign(userProfile, newProfileData)
 
     await userProfile.save();
@@ -188,7 +188,7 @@ export const getSentConnetion = async (req, res) => {
     const user = User.find({CryptoToken});
     if(!user) return res.status(404).json({message: "User Not Found"});
 
-    const connectionProfile = await ConnectionModel.find({userID: user._id}).populate('userId', 'name email username profilePicture');
+    const connectionProfile = await ConnectionModel.find({userId: user._id}).populate('userId', 'name email username profilePicture');
     return  res.json(connectionProfile);
 
 }
