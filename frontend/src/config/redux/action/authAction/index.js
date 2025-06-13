@@ -27,3 +27,14 @@ export const loginUser = createAsyncThunk(
         }
     }
 )
+
+export const registerUser = createAsyncThunk(
+    "user/register",
+    async (user, thunkApi) =>{
+        try {
+
+        } catch (error) {
+            return thunkApi.rejectWithValue(error.response.data);
+        }
+    }
+)
