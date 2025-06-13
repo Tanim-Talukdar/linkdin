@@ -13,31 +13,6 @@ export default function Home() {
       className="text-gray-900 min-h-screen w-full bg-no-repeat bg-cover bg-center"
       style={{ backgroundImage: 'url(/background.png)' }}
     >
-      {/* Nav Section */}
-      <nav className="flex justify-between items-center px-6 py-4 max-w-screen-xl mx-auto">
-        <div className="flex items-center gap-1 cursor-pointer">
-          <p className="font-sans italic text-teal-600 text-2xl sm:text-xl md:text-2xl">
-            Sweet Home
-          </p>
-        </div>
-
-        {/* Static Auth Buttons */}
-        <div>
-          <Link
-            href="/auth"
-            className="p-2 mx-2 bg-teal-600 rounded transition duration-300 hover:drop-shadow-lg hover:bg-transparent hover:border-2 hover:border-teal-600 text-white hover:text-teal-600"
-          >
-            Login
-          </Link>
-          <Link
-            href="/auth"
-            className="p-2 bg-teal-600 rounded transition duration-300 hover:drop-shadow-lg hover:bg-transparent hover:border-2 hover:border-teal-600 text-white hover:text-teal-600"
-          >
-            Register
-          </Link>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <div className="container max-w-screen-xl mx-auto px-6 py-10 flex flex-col-reverse md:flex-row items-center justify-between min-h-[88vh]">
         <div className="text-center md:text-left max-w-xl mb-10 md:mb-0">
@@ -69,5 +44,5 @@ export default function Home() {
       </div>
     </div>
     </UserLayout>
-  );
+  )
 }
