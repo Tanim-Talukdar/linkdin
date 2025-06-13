@@ -23,14 +23,16 @@ const authSlice = createSlice({
         handleLoginUser: (state) => {
             state.message = "hello"
         },
-
+        emptyMessage: (state) => {
+            state.message = ""
+        }
     },
     extraReducers: (builder) => {
 
         builder
         .addCase(loginUser.pending, (state) => {
             state.isLoading = true
-            state.message = "lnocking the door..."
+            state.message = "Knocking the door..."
         })
         .addCase(loginUser.fulfilled, (state,action) => {
             state.isLoading = false;
@@ -46,13 +48,12 @@ const authSlice = createSlice({
         })
         .addCase(registerUser.pending,(state) => {
             state.isLoading = true
-            state.message = "lnocking the door..."
+            state.message = "Knocking the door..."
         })
         .addCase(registerUser.fulfilled, (state,action) => {
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
-            state.loggedIn = true;
             state.message = "register is SuccessFull"
         })
         .addCase(registerUser.rejected, (state,action) => {
@@ -65,4 +66,5 @@ const authSlice = createSlice({
     }
 })
 
+export const {reset, handleLoginUser, emptyMessage} = authSlice.actions
 export default authSlice.reducer;

@@ -1,9 +1,17 @@
 import AuthForm from "@/components/AuthForm";
 import AuthTogglePanel from "@/components/AuthTogglePanel";
-import { useState } from "react";
+import { emptyMessage } from "@/config/redux/reducer/authReducer/authReducer";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const dispatch = useDispatch();
+  const authState = useSelector((state) => state.auth);
+
+    useEffect(() => {
+      dispatch(emptyMessage())
+    }, [isLogin])
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 px-4 py-8">

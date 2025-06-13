@@ -1,16 +1,27 @@
 import Input from "./Input";
 import Button from "./Button";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { loginUser, signupUser } from "@/config/redux/action/authAction/index";
+import { useEffect, useState } from "react";
+import { useDispatch,useSelector } from "react-redux";
+import { loginUser, registerUser } from "@/config/redux/action/authAction/index";
 import { formFields } from "@/constants/formFields";
+import { useRouter } from "next/router";
+import { reset } from "@/config/redux/reducer/authReducer/authReducer";
 
-export default function AuthForm({ mode }) {
+
+
+export default function AuthForm({ mode }) { 
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
-
+  const authState = useSelector((state) => state.auth);
   const isLogin = mode === "login";
   const fields = formFields[mode];
+  const router = useRouter();
+  useEffect(() => {
+    if (authState.loggedIn) {
+      router.push("/dashboard")
+    }
+  }, [authState.loggedIn])
+  
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -18,7 +29,8 @@ export default function AuthForm({ mode }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(isLogin ? loginUser(formData) : signupUser(formData));
+    dispatch(isLogin ? loginUser(formData) : registerUser(formData));
+    dispatch(reset());
   };
 
   return (
@@ -69,8 +81,9 @@ export default function AuthForm({ mode }) {
             />
           </div>
         ))}
-
-      <Button className="w-full mt-6">{isLogin ? "Login" : "Register"}</Button>
+      {authState.message &&   <p style={{ color: authState.isError ? "red" : "green" }}>{typeof authState.message === "string" ? authState.message : authState.message.message}</p>}
+      <br />
+      <Button className="w-full mt-6" onClick={handleSubmit}>{isLogin ? "Login" : "Register"}</Button>
 
       <div className="flex flex-col gap-4 mt-6">
         <button className="flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-lg transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(14,203,129,0.6)]">
