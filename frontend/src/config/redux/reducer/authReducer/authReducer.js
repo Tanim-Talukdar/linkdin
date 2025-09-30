@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { loginUser, registerUser } from "../../action/authAction/index.js"
+import { getUserAndProfile, loginUser, registerUser } from "../../action/authAction/index.js"
+
 
 
 const initialState = {
@@ -61,8 +62,22 @@ const authSlice = createSlice({
             state.isError = true;
             state.message = action.payload
         })
-
-
+        .addCase(getUserAndProfile.pending, (state) =>{
+            state.isLoading = true
+        })
+        .addCase(getUserAndProfile.fulfilled, (state,action) => {
+            console.log(action.payload)
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.profileFetched = true;
+            state.user = action.payload;
+        })
+        .addCase(getUserAndProfile.rejected, (state,action) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.message = action.payload
+        })
     }
 })
 
