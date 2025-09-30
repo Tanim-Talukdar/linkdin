@@ -59,3 +59,26 @@ export const registerUser = createAsyncThunk(
         }
     }
 )
+
+export const getUserAndProfile = createAsyncThunk(
+    "user/getUserAndProfile",
+    async (user ,thunkApi) => {
+        try {
+            const response = await client.get("/profile/get", {
+                params: {
+                    CryptoToken: user.token
+                }
+            });
+            console.log(response.data)
+            return thunkApi.fulfillWithValue(response.data);
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                return thunkApi.rejectWithValue(error.response.data.message);
+            } else if (error.message) {
+                return thunkApi.rejectWithValue(error.message);
+            } else {
+                return thunkApi.rejectWithValue("Unknown error occurred");
+            }
+        }
+    }
+)

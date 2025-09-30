@@ -33,11 +33,6 @@ export const register = async (req, res) => {
 
     await user.save();
 
-    // const token = jwt.sign(
-    //     { id: user._id, email: user.email, role: user.role || "user" }, 
-    //     JwtSecret,
-    //     { expiresIn: '1h', algorithm: 'HS256' }
-    // );
     const profile = new Profile({userId: user._id})
     await profile.save();
 
@@ -67,11 +62,6 @@ export const login = async (req, res) => {
     
     user.CryptoToken = CryptoToken;
     await user.save();
-    // const token = jwt.sign(
-    //     { id: user._id, email: user.email, role: user.role || "user" },
-    //     JwtSecret,
-    //     { expiresIn: "1h" , algorithm: 'HS256'}
-    // );
 
     
     return res.status(201).json({
@@ -120,7 +110,7 @@ export const updateUserProfile = async (req, res) => {
 }
 
 export const getUserAndProfile = async (req, res) => {
-    const { CryptoToken } = req.body;
+    const { CryptoToken } = req.query;
     if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
 
     const user = await User.findOne({CryptoToken});

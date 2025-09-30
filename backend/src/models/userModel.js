@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     profilePicture: {
         path: {
             type: String,
-            default: 'default.jpg'
+            default: 'uploads/default.jpg'
         },
         filename: String,
     },
