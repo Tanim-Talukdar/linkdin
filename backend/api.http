@@ -86,3 +86,16 @@ Content-Type: application/json
   "CryptoToken": "YOUR_JWT_TOKEN_HERE",
   "senderId": "SENDER_USER_ID"
 }
+
+###comment
+POST http://localhost:5001/api/v1/comment
+Content-Type: application/json
+
+{
+  "CryptoToken": "bcc3e1c76adf49cceb2cf99148df7b806de380ce1db2f3801a3c1bad480bdc6c",
+  "post_id": "684932a50f67d807f8616a46",
+  "commentBody": "Lets Do It "
+}
+
+### Get Comments for a Post
+GET http://localhost:5001/api/v1/all_comment?post_id=684932a50f67d807f8616a46

@@ -51,7 +51,7 @@ export const deletePost = async (req, res) => {
 export const commentPost = async (req, res) => {
     const { CryptoToken, post_id, commentBody } = req.body;
 
-    const user = await User.findOne({CryptoToken}).select('_id');
+    const user = await User.findOne({CryptoToken});
     if(!user) return res.status(404).json({message: "User Not Found"});
 
     const post = await Post.findById(post_id);
@@ -64,11 +64,12 @@ export const commentPost = async (req, res) => {
     })
 
     await comment.save();
-    return res.status(200).json({message: "Comment added"});
+    await comment.populate("userId", "name email profilePicture");
+    return res.status(200).json({message: "Comment added", comment: comment});
 }
 
 export const get_Comment_Post = async (req, res) => {
-    const { post_id } = req.body;
+    const { post_id } = req.query;
 
 
     const post = await Post.findById(post_id);
