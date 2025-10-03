@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllPosts, createPost, likeIncreaments } from "@/config/redux/action/postAction";
 import { getUserAndProfile } from "@/config/redux/action/authAction";
 import { useRouter } from "next/router";
-import UserLayout from "@/layout/clienLayout/UserLayout";
-import Image from "next/image";
+import DashboardLayout from "@/layout/DashboardLayout";
 import PostCard from "@/components/PostCard";
 import { toast, Toaster } from "react-hot-toast";
 
@@ -20,61 +19,42 @@ export default function Dashboard() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Check for token and redirect if not present
+  // Token check
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      router.push("/login");
-    }
+    if (!localStorage.getItem("token")) router.push("/login");
   }, [router]);
 
-  // Fetch posts and user profile
+  // Fetch posts & user
   useEffect(() => {
     dispatch(getAllPosts());
     dispatch(getUserAndProfile({ token: localStorage.getItem("token") }));
   }, [dispatch]);
 
-  // Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setPostFile(file);
-
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
-      setPreview(fileURL);
-    } else {
-      setPreview(null);
-    }
+    setPreview(file ? URL.createObjectURL(file) : null);
   };
 
-  // Revoke object URL
   useEffect(() => {
-    return () => {
-      if (preview) URL.revokeObjectURL(preview);
-    };
+    return () => preview && URL.revokeObjectURL(preview);
   }, [preview]);
 
-  // Handle creating a post
   const handleCreatePost = async () => {
     if (!postBody && !postFile) {
-      toast.error("Please write something or select a file to post.");
+      toast.error("Write something or add a file!");
       return;
     }
 
     setLoading(true);
-
     try {
       await dispatch(
-        createPost({
-          CryptoToken: localStorage.getItem("token"),
-          body: postBody,
-          file: postFile,
-        })
+        createPost({ CryptoToken: localStorage.getItem("token"), body: postBody, file: postFile })
       ).unwrap();
 
       setPostBody("");
       setPostFile(null);
       setPreview(null);
-
       dispatch(getAllPosts());
       toast.success("Post created successfully!");
     } catch (err) {
@@ -85,140 +65,88 @@ export default function Dashboard() {
     }
   };
 
+  const onLike = (id) => dispatch(likeIncreaments(id));
+
   if (!authState?.user || !authState?.user?.userId) {
     return (
-      <UserLayout>
+      <DashboardLayout authState={authState}>
         <div className="flex items-center justify-center h-screen">
           <p className="text-gray-500 text-lg font-medium">Loading...</p>
         </div>
-      </UserLayout>
+      </DashboardLayout>
     );
   }
 
-  const onLike = (id) => {
-    dispatch(likeIncreaments(id));
-  };
-
-  const profilePic = authState.user.userId?.profilePicture?.path;
-
   return (
-    <UserLayout>
+    <DashboardLayout authState={authState}>
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="min-h-screen bg-gray-100 flex">
-        {/* Left Sidebar */}
-        <aside className="w-1/5 bg-white p-4 overflow-y-auto">
-          <ul className="space-y-4 font-medium">
-            <li className="cursor-pointer hover:text-teal-600">Scroll</li>
-            <li className="cursor-pointer hover:text-teal-600">Discover</li>
-            <li className="cursor-pointer hover:text-teal-600">Connections</li>
-          </ul>
-        </aside>
 
-        {/* Main Feed */}
-        <main className="w-3/5 p-6 space-y-6">
-          {/* Create Post */}
-          <div className="bg-white p-4 rounded-lg shadow space-y-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                <Image
-                  src={`http://localhost:5001/${profilePic}`}
-                  alt={authState.user?.name || "Profile Picture"}
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
-              </div>
+      {/* Create Post */}
+      <div className="bg-white p-4 rounded-lg shadow space-y-3 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-3 sm:space-y-0">
+          <input
+            type="text"
+            placeholder="Start a post..."
+            className="flex-1 border rounded-full px-4 py-2 focus:outline-none w-full"
+            value={postBody}
+            onChange={(e) => setPostBody(e.target.value)}
+          />
 
-              <input
-                type="text"
-                placeholder="Start a post..."
-                className="flex-1 border rounded-full px-4 py-2 focus:outline-none"
-                value={postBody}
-                onChange={(e) => setPostBody(e.target.value)}
-              />
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
+            id="fileInput"
+            accept="image/*"
+          />
+          <label
+            htmlFor="fileInput"
+            className="bg-teal-500 text-white px-4 py-2 rounded-full cursor-pointer text-center"
+          >
+            Add Photo
+          </label>
+        </div>
 
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                id="fileInput"
-                accept="image/*"
-              />
-              <label
-                htmlFor="fileInput"
-                className="bg-teal-500 text-white px-4 py-2 rounded-full cursor-pointer"
-              >
-                Add Photo
-              </label>
-            </div>
-
-            {/* Preview Image */}
-            {preview && (
-              <div className="relative mt-2 w-32 h-32 rounded overflow-hidden border border-gray-300">
-                <button
-                  onClick={() => {
-                    setPreview(null);
-                    setPostFile(null);
-                  }}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold z-10"
-                >
-                  ×
-                </button>
-
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            )}
-
+        {/* Preview Image */}
+        {preview && (
+          <div className="relative mt-2 w-full sm:w-40 h-40 rounded overflow-hidden border border-gray-300">
             <button
-              className={`w-full bg-teal-500 text-white px-4 py-2 rounded-lg ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              onClick={handleCreatePost}
-              disabled={loading}
+              onClick={() => {
+                setPreview(null);
+                setPostFile(null);
+              }}
+              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold z-10"
             >
-              {loading ? "Posting..." : "Add Post"}
+              ×
             </button>
+            <img src={preview} alt="Preview" className="w-full h-full object-contain" />
           </div>
+        )}
 
-          {/* Posts */}
-          {postState.posts && postState.posts.length > 0 ? (
-            postState.posts.map((post) => (
-              <PostCard key={post._id} post={post} onLike={() => onLike(post._id)} />
-            ))
-          ) : (
-            <p className="text-gray-500">No posts yet.</p>
-          )}
-        </main>
-
-        {/* Right Sidebar */}
-        <aside className="w-1/5 bg-white p-4 space-y-6">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-full bg-gray-300"></div>
-            <div>
-              <h3 className="font-semibold">Your Name</h3>
-              <p className="text-sm text-gray-500">Software Engineer</p>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-3">Connections</h4>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-                <span>Riha</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-                <span>Asif</span>
-              </div>
-            </div>
-          </div>
-        </aside>
+        {/* Add Post Button */}
+        <div>
+          <button
+            className={`w-full bg-teal-500 text-white px-4 py-2 rounded-lg ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={handleCreatePost}
+            disabled={loading}
+          >
+            {loading ? "Posting..." : "Add Post"}
+          </button>
+        </div>
       </div>
-    </UserLayout>
+
+      {/* Posts */}
+      <div className="space-y-6">
+        {postState.posts?.length > 0 ? (
+          postState.posts.map((post) => (
+            <PostCard key={post._id} post={post} onLike={() => onLike(post._id)} />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center">No posts yet.</p>
+        )}
+      </div>
+    </DashboardLayout>
   );
 }

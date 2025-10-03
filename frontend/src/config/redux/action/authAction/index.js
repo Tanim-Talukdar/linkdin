@@ -81,3 +81,19 @@ export const getUserAndProfile = createAsyncThunk(
         }
     }
 )
+
+
+export const getAllUser = createAsyncThunk(
+    'post/getAllUser',
+    async(_, thunkApi) =>{
+        
+        try {
+            const response = await client.get('/profile/allUser');
+            return thunkApi.fulfillWithValue(response.data);
+        } catch (error) {
+        return thunkApi.rejectWithValue(
+            error?.response?.data?.message || error.message || "Unknown error occurred"
+        );
+    }
+    }
+) 
