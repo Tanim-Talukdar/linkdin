@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { getUserAndProfile, loginUser, registerUser } from "../../action/authAction/index.js"
+import { getAllUser, getUserAndProfile, loginUser, registerUser } from "../../action/authAction/index.js"
 
 
 
 const initialState = {
     user: null,
+    allUser: null,
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -76,9 +77,23 @@ const authSlice = createSlice({
             state.isSuccess = true;
             state.profileFetched = true;
             state.user = action.payload;
-            console.log(state.user)
         })
         .addCase(getUserAndProfile.rejected, (state,action) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.message = action.payload
+        })
+        .addCase(getAllUser.pending, (state) =>{
+            state.isLoading = true
+        })
+        .addCase(getAllUser.fulfilled, (state,action) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.allUser = action.payload;
+            console.log(state.allUser)
+        })
+        .addCase(getAllUser.rejected, (state,action) => {
             state.isLoading = false;
             state.isError = true;
             state.message = action.payload
