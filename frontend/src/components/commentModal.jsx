@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { createComment, getAllComment } from "@/config/redux/action/postAction";
+import { createComment, deleteComment, getAllComment } from "@/config/redux/action/postAction";
 import { getUserAndProfile } from "@/config/redux/action/authAction";
 import { IoSend, IoTrash } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,6 +48,24 @@ const CommentModal = ({ post, onClose }) => {
     promise.finally(() => setIsSending(false));
     setCommentBody("");
   };
+const handleDelete = (comment_id) => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  if (!token) {
+    console.error("No token found");
+    return;
+  }
+
+  if (!post?._id) {
+    console.error("Post ID not available");
+    return;
+  }
+
+  dispatch(deleteComment({
+    post_id: post._id,
+    CryptoToken: token,
+    comment_id
+  }));
+};
 
   return (
     <AnimatePresence>
@@ -138,7 +156,7 @@ const CommentModal = ({ post, onClose }) => {
                       </p>
                       <p className="text-gray-700 text-sm">{c?.body}</p>
                     </div>
-                    {authState.user.userId._id === c?.userId?._id && (
+                    {authState?.user?.userId?._id === c?.userId?._id && (
                         <button
                           onClick={() => handleDelete(c._id)}
                           className="text-red-500"

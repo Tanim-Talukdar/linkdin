@@ -1,6 +1,6 @@
 // postSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { comment, createComment, createPost, deleteComment, getAllComment, getAllPosts, likeIncreaments } from "../../action/postAction";
+import { comment, createComment, createPost, deleteComment, deletePost, getAllComment, getAllPosts, likeIncreaments } from "../../action/postAction";
 
 const initialState = {
   posts: [],
@@ -124,12 +124,30 @@ const postSlice = createSlice({
       .addCase(deleteComment.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deleteComment.fulfilled, (state, action) => {
+.addCase(deleteComment.fulfilled, (state, action) => {
+  state.isLoading = false;
+  state.isError = false;
+  state.message = "Comment deleted Successfully";
+
+  // action.meta.arg.comment_id contains the deleted comment ID
+  const deletedId = action.meta.arg.comment_id;
+  state.comments = state.comments.filter(c => c._id !== deletedId);
+})
+      .addCase(deleteComment.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      // ========== delete post ==========
+      .addCase(deletePost.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        state.message = "Comment deleted Successfully";
+        state.message = "Post Deleted Successfully";
       })
-      .addCase(deleteComment.rejected, (state, action) => {
+      .addCase(deletePost.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

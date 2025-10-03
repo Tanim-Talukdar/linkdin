@@ -11,7 +11,6 @@ export default function Home() {
     <UserLayout>
     <div
       className="text-gray-900 min-h-screen w-full bg-no-repeat bg-cover bg-center"
-      style={{ backgroundImage: 'url(/background.png)' }}
     >
       {/* Hero Section */}
       <div className="container max-w-screen-xl mx-auto px-6 py-10 flex flex-col-reverse md:flex-row items-center justify-between min-h-[88vh]">

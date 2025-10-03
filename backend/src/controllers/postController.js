@@ -19,7 +19,7 @@ export const createPost = async (req, res) => {
         body: req.body.body,
         media: req.file ? {
             filename: req.file.filename,
-            path: req.file.path
+            path: `uploads/${req.file.filename}`
         } : undefined,
         fileType: req.file ? req.file.mimetype : ""
     });

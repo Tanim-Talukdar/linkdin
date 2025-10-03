@@ -20,7 +20,12 @@ const authSlice = createSlice({
     initialState,
     reducers: {
 
-        reset: () => initialState,
+        reset: (state) => {
+            return {
+            ...initialState,
+            loggedIn: state.loggedIn, // keep the current loggedIn value
+        };
+        },
         handleLoginUser: (state) => {
             state.message = "hello"
         },

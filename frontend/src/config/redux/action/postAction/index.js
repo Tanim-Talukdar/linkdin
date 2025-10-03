@@ -71,21 +71,20 @@ export const createComment = createAsyncThunk(
 )
 
 export const deleteComment = createAsyncThunk(
-    'post/deleteComment',
-    async(post_id, CryptoToken ,thunkApi) =>{
-        try {
-            const deleteComment = await client.post('/delete_comment' ,{
-                post_id,
-                CryptoToken
-            });
-            return thunkApi.fulfillWithValue(deleteComment.data.message);
-        } catch (error) {
-            return thunkApi.rejectWithValue(
-                error?.response?.data?.message || error.message || "Unknown error occurred"
-            );
-        }
+  'post/deleteComment',
+  async ({ post_id, CryptoToken, comment_id }, thunkApi) => {
+    try {
+      const response = await client.delete('/delete_comment', {
+        data: { post_id, CryptoToken, comment_id } // for axios DELETE with body
+      });
+      return thunkApi.fulfillWithValue(response.data.message);
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data?.message || error.message || "Unknown error occurred"
+      );
     }
-)
+  }
+);
 
 // createPost async thunk
 export const createPost = createAsyncThunk(
@@ -96,10 +95,10 @@ export const createPost = createAsyncThunk(
       formData.append("CryptoToken", CryptoToken);
       formData.append("body", body);
       if (file) {
-        formData.append("file", file); // multer field name must match backend
+        formData.append("media", file); // multer field name must match backend
       }
 
-      const { data } = await axios.post("/api/post", formData, {
+      const { data } = await client.post("/post", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -114,3 +113,19 @@ export const createPost = createAsyncThunk(
   }
 );
 
+
+export const deletePost = createAsyncThunk(
+  'post/deletePost',
+  async ({ post_id, CryptoToken }, thunkApi) => {
+    try {
+      const response = await client.delete('/delete_post', {
+        data: { post_id, CryptoToken } 
+      });
+      return thunkApi.fulfillWithValue(response.data.message);
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data?.message || error.message || "Unknown error occurred"
+      );
+    }
+  }
+);

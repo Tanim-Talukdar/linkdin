@@ -26,7 +26,7 @@ const upload = multer({ storage });
 router.get('/a', wrapAsync(activeCheak));
 router.post("/post",upload.single('media'), wrapAsync(createPost));
 router.get("/posts", wrapAsync(getAllPost));
-router.post("/delete_post", wrapAsync(deletePost));
+router.delete("/delete_post", wrapAsync(deletePost));
 router.post("/comment", wrapAsync(commentPost));
 router.get("/all_comment", wrapAsync(get_Comment_Post));
 router.delete("/delete_comment", wrapAsync(deleteComment));
