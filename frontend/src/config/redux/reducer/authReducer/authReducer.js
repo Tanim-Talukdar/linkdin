@@ -4,7 +4,7 @@ import { getUserAndProfile, loginUser, registerUser } from "../../action/authAct
 
 
 const initialState = {
-    user: [],
+    user: null,
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -20,7 +20,12 @@ const authSlice = createSlice({
     initialState,
     reducers: {
 
-        reset: () => initialState,
+        reset: (state) => {
+            return {
+            ...initialState,
+            loggedIn: state.loggedIn, // keep the current loggedIn value
+        };
+        },
         handleLoginUser: (state) => {
             state.message = "hello"
         },
@@ -66,12 +71,12 @@ const authSlice = createSlice({
             state.isLoading = true
         })
         .addCase(getUserAndProfile.fulfilled, (state,action) => {
-            console.log(action.payload)
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
             state.profileFetched = true;
             state.user = action.payload;
+            console.log(state.user)
         })
         .addCase(getUserAndProfile.rejected, (state,action) => {
             state.isLoading = false;

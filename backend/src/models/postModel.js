@@ -21,11 +21,9 @@ const postSchema = new mongoose.Schema({
     media: {
         path: {
             type: String,
-            required: true
         },
         filename: {
             type: String,
-            required: true
         }
     },
     fileType: {

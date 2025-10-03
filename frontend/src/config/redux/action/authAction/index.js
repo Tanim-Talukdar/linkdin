@@ -69,7 +69,6 @@ export const getUserAndProfile = createAsyncThunk(
                     CryptoToken: user.token
                 }
             });
-            console.log(response.data)
             return thunkApi.fulfillWithValue(response.data);
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {

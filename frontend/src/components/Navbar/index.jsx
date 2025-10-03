@@ -1,11 +1,20 @@
 import Link from "next/link";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { getUserAndProfile } from "@/config/redux/action/authAction";
 
 export default function Navbar() {
   const authState = useSelector((state) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const dispatch = useDispatch();
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && !authState.profileFetched) {
+      dispatch(getUserAndProfile({ token }));
+    }
+  }, [ authState.profileFetched, dispatch]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 

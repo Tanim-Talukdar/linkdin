@@ -17,10 +17,10 @@ export default function AuthForm({ mode }) {
   const fields = formFields[mode];
   const router = useRouter();
   useEffect(() => {
-    if (authState.loggedIn) {
+    if (authState.loggedIn || authState.profileFetched) {
       router.push("/dashboard")
     }
-  }, [authState.loggedIn])
+  }, [authState.loggedIn,router])
   
 
   const handleChange = (e) => {
@@ -30,7 +30,7 @@ export default function AuthForm({ mode }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(isLogin ? loginUser(formData) : registerUser(formData));
-    dispatch(reset());
+
   };
 
   return (
