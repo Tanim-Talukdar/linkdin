@@ -19,7 +19,7 @@ export const createPost = async (req, res) => {
         body: req.body.body,
         media: req.file ? {
             filename: req.file.filename,
-            path: `uploads/${req.file.filename}`
+            path: req.file.path,
         } : undefined,
         fileType: req.file ? req.file.mimetype : ""
     });
@@ -34,19 +34,24 @@ export const getAllPost = async (req, res) => {
 }
 
 export const deletePost = async (req, res) => {
-    const { CryptoToken, post_id } = req.body;
+  const { CryptoToken, post_id } = req.body;
+  const user = await User.findOne({ CryptoToken }).select("_id");
+  if (!user) return res.status(404).json({ message: "User Not Found" });
 
-    const user = await User.findOne({CryptoToken}).select('_id');
-    if(!user) return res.status(404).json({message: "User Not Found"});
+  const post = await Post.findById(post_id);
+  if (!post) return res.status(404).json({ message: "Post Not Found" });
 
-    const post = await Post.findById(post_id);
-    if(!post) return res.status(404).json({message: "Post Not Found"});
+  if (post.userId.toString() !== user._id.toString())
+    return res.status(403).json({ message: "Unauthorized" });
 
-    if(post.userId.toString() !== user._id.toString()) return res.status(403).json({message: "Unauthorized"});
+  // Delete image from Cloudinary (if exists)
+  if (post.media && post.media.filename) {
+    await cloudinary.uploader.destroy(post.media.filename);
+  }
 
-    await Post.deleteOne({_id: post_id});
-    return res.status(200).json({message: "post deleted"});
-}
+  await Post.deleteOne({ _id: post_id });
+  return res.status(200).json({ message: "Post deleted successfully" });
+};
 
 export const commentPost = async (req, res) => {
     const { CryptoToken, post_id, commentBody } = req.body;

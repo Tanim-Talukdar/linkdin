@@ -4,13 +4,12 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "5001",           // তোমার backend port
-        pathname: "/uploads/**" // যে path এ images আছে
-      }
-    ]
-  }
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/wanderlust12/**", // তোমার Cloudinary cloud name
+      },
+    ],
+  },
 };
 
 export default nextConfig;

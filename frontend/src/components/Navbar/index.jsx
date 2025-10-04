@@ -35,7 +35,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-500">
                   <Image
-                    src={`http://localhost:5001/${authState.user.userId.profilePicture?.path || "uploads/default.jpg"}`}
+                    src={authState.user.userId.profilePicture?.path || "/default.jpg"}
                     alt="Profile"
                     width={40}
                     height={40}
@@ -120,7 +120,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-500">
                   <Image
-                    src={`http://localhost:5001/${authState?.user?.userId?.profilePicture?.path || "uploads/default.jpg"}`}
+                    src={authState?.user?.userId?.profilePicture?.path || "/default.jpg"}
                     alt="Profile"
                     width={40}
                     height={40}

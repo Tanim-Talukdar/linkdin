@@ -15,11 +15,6 @@ export default function DiscoverPage() {
 
   const profiles = authState?.allUser?.profile || [];
 
-  const getFullURL = (path) => {
-    if (!path) return "http://localhost:5001/uploads/default.jpg";
-    if (path.startsWith("http")) return path;
-    return `http://localhost:5001/${path}`;
-  };
 
   return (
     <DashboardLayout authState={authState}>
@@ -54,7 +49,7 @@ export default function DiscoverPage() {
                     <div className="flex items-center space-x-4">
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border">
                         <Image
-                          src={getFullURL(profile?.userId?.profilePicture?.path)}
+                          src={profile?.userId?.profilePicture?.path}
                           alt={name}
                           width={64}
                           height={64}

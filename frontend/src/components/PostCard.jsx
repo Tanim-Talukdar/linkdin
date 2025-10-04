@@ -6,11 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { deletePost, getAllPosts } from "@/config/redux/action/postAction";
 import { toast } from "react-hot-toast";
 
-const getFullURL = (path) => {
-  if (!path) return "http://localhost:5001/uploads/default.jpg";
-  if (path.startsWith("http")) return path;
-  return `http://localhost:5001/${path}`;
-};
 
 const PostCard = ({ post, onLike }) => {
   const [showComments, setShowComments] = useState(false);
@@ -40,7 +35,7 @@ const PostCard = ({ post, onLike }) => {
         <div className="flex items-center space-x-3">
           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-teal-500">
             <Image
-              src={getFullURL(post?.userId?.profilePicture?.path)}
+              src={post?.userId?.profilePicture?.path}
               alt={post?.userId?.name || "User"}
               width={48}
               height={48}
@@ -84,7 +79,7 @@ const PostCard = ({ post, onLike }) => {
         {post?.media?.path && post?.fileType?.startsWith("image") && (
           <div className="w-full rounded-xl overflow-hidden mb-4 flex justify-center hover:scale-105 transition-transform duration-300">
             <Image
-              src={getFullURL(post.media.path)}
+              src={post.media.path}
               alt={post.media.filename}
               width={600}
               height={400}
