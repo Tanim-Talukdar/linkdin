@@ -2,24 +2,11 @@ import { Router } from "express";
 import wrapAsync from "../utils/wrapAsync.js";
 import { activeCheak, commentPost, createPost, deleteComment, deletePost, get_Comment_Post, getAllPost, likeIncreaments } from "../controllers/postController.js";
 import multer from "multer";
-import fs from "fs";
-import path from "path";
+import { storage } from "../cloudinary.js";
 
 
 const router = Router();
 
-
-
-const uploadPath = path.join(process.cwd(), "uploads");
-if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadPath),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + Date.now() + ext);
-  },
-});
 
 const upload = multer({ storage });
 

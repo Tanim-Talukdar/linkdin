@@ -7,11 +7,6 @@ import { IoSend, IoTrash } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
-const getFullURL = (path) => {
-  if (!path) return "http://localhost:5001/uploads/default.jpg";
-  if (path.startsWith("http")) return path;
-  return `http://localhost:5001/${path}`;
-};
 
 const CommentModal = ({ post, onClose }) => {
   const dispatch = useDispatch();
@@ -96,7 +91,7 @@ const handleDelete = (comment_id) => {
           <div className="flex-1 bg-black relative">
             {post?.media?.path && post?.fileType?.startsWith("image") && (
               <Image
-                src={getFullURL(post.media.path)}
+                src={post.media.path}
                 alt={post?.media?.filename || "post image"}
                 fill
                 className="object-contain"
@@ -140,10 +135,10 @@ const handleDelete = (comment_id) => {
                   >
                     <div className="w-10 h-10 rounded-full overflow-hidden mt-1 border">
                       <Image
-                        src={getFullURL(
+                        src={
                           c?.userId?.profilePicture?.path ||
-                            "uploads/default.jpg"
-                        )}
+                            "/default.jpg"
+                           }
                         alt={c?.userId?.name || "user"}
                         width={40}
                         height={40}

@@ -50,7 +50,7 @@ export default function DashboardLayout({ children, authState }) {
             <div className="w-12 h-12 rounded-full overflow-hidden">
               {profilePic ? (
                 <Image
-                  src={`http://localhost:5001/${profilePic}`}
+                  src={profilePic}
                   alt="Profile"
                   width={48}
                   height={48}
