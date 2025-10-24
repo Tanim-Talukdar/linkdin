@@ -84,7 +84,7 @@ export const getUserAndProfile = createAsyncThunk(
 
 
 export const getAllUser = createAsyncThunk(
-    'post/getAllUser',
+    'user/getAllUser',
     async(_, thunkApi) =>{
         
         try {
@@ -97,3 +97,26 @@ export const getAllUser = createAsyncThunk(
     }
     }
 ) 
+
+export const userDetail = createAsyncThunk(
+    "user/userDetail",
+    async (username ,thunkApi) => {
+        try {
+            const response = await client.get("/profile/userDetail", {
+                params: {
+                    username
+                }
+            });
+            console.log(response.data)
+            return thunkApi.fulfillWithValue(response.data);
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                return thunkApi.rejectWithValue(error.response.data.message);
+            } else if (error.message) {
+                return thunkApi.rejectWithValue(error.message);
+            } else {
+                return thunkApi.rejectWithValue("Unknown error occurred");
+            }
+        }
+    }
+)

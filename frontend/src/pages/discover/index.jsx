@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { getAllUser } from "@/config/redux/action/authAction";
+import { useRouter } from "next/router";
 
 export default function DiscoverPage() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const authState = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -15,6 +17,11 @@ export default function DiscoverPage() {
 
   const profiles = authState?.allUser?.profile || [];
 
+  const handleNavigate = (username) => {
+    if (username) {
+      router.push(`/view-profile?username=${username}`);
+    }
+  };
 
   return (
     <DashboardLayout authState={authState}>
@@ -27,11 +34,8 @@ export default function DiscoverPage() {
         {profiles.length > 0 ? (
           profiles.map((profile) => {
             const name = profile?.userId?.name || "Unknown User";
-            const username = profile?.userId?.username
-              ? `@${profile.userId.username}`
-              : "";
-            const currentPost =
-              profile?.currentPost || "No current position available";
+            const username = profile?.userId?.username || "";
+            const currentPost = profile?.currentPost || "No current position available";
             const bio = profile?.bio || "No bio available";
             const education = profile?.education || [];
             const pastWork = profile?.pastWork || [];
@@ -39,7 +43,8 @@ export default function DiscoverPage() {
             return (
               <div
                 key={profile?.userId?._id || Math.random()}
-                className="bg-white p-5 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col"
+                className="bg-white p-5 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col cursor-pointer"
+                onClick={() => handleNavigate(username)}
               >
                 {/* Profile Layout */}
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-5">
@@ -60,23 +65,30 @@ export default function DiscoverPage() {
                         <h3 className="text-lg font-semibold truncate text-gray-800">
                           {name}
                         </h3>
-                        <p className="text-sm text-gray-500 truncate">{username}</p>
+                        <p className="text-sm text-gray-500 truncate">{`@${username}`}</p>
                         <p className="text-sm text-gray-500 truncate italic">
                           {currentPost}
                         </p>
                       </div>
                     </div>
 
-                    <p className="mt-3 text-gray-600 text-sm line-clamp-3">
-                      {bio}
-                    </p>
+                    <p className="mt-3 text-gray-600 text-sm line-clamp-3">{bio}</p>
 
                     {/* Buttons */}
                     <div className="mt-4 flex flex-wrap gap-2">
-                      <button className="flex-1 min-w-[90px] bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition">
+                      <button
+                        onClick={(e) => e.stopPropagation()} // Prevent card click
+                        className="flex-1 min-w-[90px] bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition"
+                      >
                         Connect
                       </button>
-                      <button className="flex-1 min-w-[90px] bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent card click
+                          handleNavigate(username); // Navigate to profile
+                        }}
+                        className="flex-1 min-w-[90px] bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition"
+                      >
                         View Profile
                       </button>
                     </div>
@@ -86,9 +98,7 @@ export default function DiscoverPage() {
                   <div className="flex-1 md:border-l md:pl-5 border-gray-200">
                     {education.length > 0 && (
                       <div className="mb-3">
-                        <h4 className="font-semibold text-gray-700 mb-1">
-                          Education
-                        </h4>
+                        <h4 className="font-semibold text-gray-700 mb-1">Education</h4>
                         <ul className="text-gray-600 text-sm space-y-1">
                           {education.map((edu, i) => (
                             <li key={i} className="truncate">
@@ -103,9 +113,7 @@ export default function DiscoverPage() {
 
                     {pastWork.length > 0 && (
                       <div>
-                        <h4 className="font-semibold text-gray-700 mb-1">
-                          Past Work
-                        </h4>
+                        <h4 className="font-semibold text-gray-700 mb-1">Past Work</h4>
                         <ul className="text-gray-600 text-sm space-y-1">
                           {pastWork.map((work, i) => (
                             <li key={i} className="truncate">
@@ -123,9 +131,7 @@ export default function DiscoverPage() {
             );
           })
         ) : (
-          <p className="text-center text-gray-500 col-span-full">
-            No profiles found.
-          </p>
+          <p className="text-center text-gray-500 col-span-full">No profiles found.</p>
         )}
       </div>
     </DashboardLayout>

@@ -1,4 +1,4 @@
-import Input from "./Input";
+
 import Button from "./Button";
 import { useEffect, useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { loginUser, registerUser } from "@/config/redux/action/authAction/index"
 import { formFields } from "@/constants/formFields";
 import { useRouter } from "next/router";
 import { reset } from "@/config/redux/reducer/authReducer/authReducer";
+import Input from "./input";
 
 
 

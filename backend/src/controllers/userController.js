@@ -121,6 +121,20 @@ export const getUserAndProfile = async (req, res) => {
 
 }
 
+export const userDetail = async (req, res) => {
+    const { username } = req.query;
+    if (!username) return res.status(400).json({ message: "username is not available" });
+
+
+    const user = await User.findOne({username});
+    if(!user) return res.status(404).json({message: "User Not Found"});
+
+    const userProfile = await Profile.findOne({ userId: user._id })
+                                     .populate('userId', 'name email username profilePicture');
+    
+    return res.json(userProfile);
+}
+
 export const UpdateProfileData = async (req,res) => {
     const { CryptoToken, ...newProfileData } = req.body;
     if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is  not available" });
