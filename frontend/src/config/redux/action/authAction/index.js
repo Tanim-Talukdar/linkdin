@@ -142,9 +142,9 @@ export const uploadProfilePicture = createAsyncThunk(
   }
 );
 
-/*  Update User Profile (Basic Info) */
-export const updateUserProfile = createAsyncThunk(
-  "user/updateUserProfile",
+/*  Update User (Basic Info) */
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
   async (data, thunkApi) => {
     try {
       const response = await client.post("/profile/update", data);

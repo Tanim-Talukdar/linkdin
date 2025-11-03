@@ -92,8 +92,7 @@ const ViewProfile = () => {
             <div>
               <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
               <p className="text-gray-500">@{user?.userId?.username}</p>
-              <p className="text-gray-600 mt-1 text-sm">{user?.userId?.bio || "No bio added yet"}</p>
-              <p className="text-gray-400 text-xs mt-1">{user?.userId?.location || "Unknown location"}</p>
+              <p className="text-gray-600 mt-1 text-sm">{user?.bio || "No bio added yet"}</p>
             </div>
           </div>
           <div className="flex space-x-3">
@@ -107,9 +106,6 @@ const ViewProfile = () => {
               }`}
             >
               {requested ? "Requested" : "Connect"}
-            </button>
-            <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-5 py-2 rounded-xl shadow-md font-medium">
-              Message
             </button>
           </div>
         </motion.div>

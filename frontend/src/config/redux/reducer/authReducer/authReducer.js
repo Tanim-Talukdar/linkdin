@@ -12,6 +12,7 @@ import {
   getSentConnections,
   myConnections,
   acceptConnections,
+  updateUser,
 } from "../../action/authAction/index.js";
 
 const initialState = {
@@ -90,6 +91,7 @@ const authSlice = createSlice({
         state.isSuccess = true;
         state.profileFetched = true;
         state.myProfile = action.payload;
+        console.log(state.myProfile)
       })
       .addCase(getUserAndProfile.rejected, (state, action) => {
         state.isLoading = false;
@@ -147,16 +149,16 @@ const authSlice = createSlice({
       })
 
       // Update User Profile
-      .addCase(updateUserProfile.pending, (state) => {
+      .addCase(updateUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
+      .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.user = { ...state.user, ...action.payload };
         state.message = "Profile updated successfully";
       })
-      .addCase(updateUserProfile.rejected, (state, action) => {
+      .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

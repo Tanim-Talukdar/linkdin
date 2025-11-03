@@ -94,21 +94,30 @@ export const uploadProfilePicture = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   const { CryptoToken, ...newUserdata } = req.body;
   if (!CryptoToken)
-    return res.status(400).json({ message: "CryptoToken is unavailbe" });
+    return res.status(400).json({ message: "CryptoToken is unavailable" });
 
   const user = await User.findOne({ CryptoToken });
   if (!user) return res.status(404).json({ message: "User Not Found" });
 
   const { username, email } = newUserdata;
-  const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-  if (existingUser || String(existingUser._id) !== String(user._id))
-    return res.status(400).json({ message: "user already exists" });
 
-  Object.assign(user, existingUser);
+
+  if (username && username !== user.username) {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) return res.status(400).json({ message: "Username already exists" });
+  }
+
+  if (email && email !== user.email) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
+  }
+
+  Object.assign(user, newUserdata);
   await user.save();
 
-  return res.status(200).json({ message: "user update successfully" });
+  return res.status(200).json({ message: "User updated successfully" });
 };
+
 
 export const getUserAndProfile = async (req, res) => {
   const { CryptoToken } = req.query;
@@ -145,7 +154,7 @@ export const UpdateProfileData = async (req, res) => {
   const { CryptoToken, ...newProfileData } = req.body;
   if (!CryptoToken)
     return res.status(400).json({ message: "CryptoToken is  not available" });
-
+console.log(req.body)
   const user = await User.findOne({ CryptoToken });
   if (!user) return res.status(404).json({ message: "User Not Found" });
 
