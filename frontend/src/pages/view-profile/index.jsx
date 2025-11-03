@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userDetail, sendConnectionRequest, getSentConnections } from "@/config/redux/action/authAction";
 import { useRouter } from "next/router";
 import DashboardLayout from "@/layout/DashboardLayout";
+import { BASE_URL } from "@/config";
 
 const ViewProfile = () => {
   const router = useRouter();
@@ -107,6 +108,14 @@ const ViewProfile = () => {
             >
               {requested ? "Requested" : "Connect"}
             </button>
+             <a
+              href={`${BASE_URL}/user/download_resume?id=${user?.userId?._id}`} // replace with your link
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-2 rounded-xl shadow-md font-medium bg-teal-500 hover:bg-teal-600 text-white"
+            >
+              Download Resume
+            </a>
           </div>
         </motion.div>
 
