@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 import Comment from "../models/commentsModel.js"
 import bcrypt from "bcrypt";
+import { cloudinary } from "../cloudinary.js";
 
 export const activeCheak = async (req,res) => {
     return res.status(200).json({message: "why you're so insecure ? The post is working ."})

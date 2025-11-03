@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import DashboardLayout from "@/layout/DashboardLayout";
-import { getAllUser } from "@/config/redux/action/authAction";
+import { getAllUser, sendConnectionRequest } from "@/config/redux/action/authAction";
 import { useRouter } from "next/router";
 
 export default function DiscoverPage() {
@@ -15,8 +15,17 @@ export default function DiscoverPage() {
     dispatch(getAllUser());
   }, [dispatch]);
 
+  const sendConection = (connectionId) => {
+    const CryptoToken = localStorage.getItem("token")
+    dispatch(sendConnectionRequest({CryptoToken,connectionId}))
+  }
+
   const profiles = authState?.allUser?.profile || [];
 
+  // Exclude current user's profile
+const filteredProfiles = profiles.filter(
+  (profile) => profile?.userId?._id !== authState?.myProfile?.userId?._id
+);
   const handleNavigate = (username) => {
     if (username) {
       router.push(`/view-profile?username=${username}`);
@@ -31,8 +40,8 @@ export default function DiscoverPage() {
 
       {/* Responsive Grid */}
       <div className="grid gap-6 grid-cols-1">
-        {profiles.length > 0 ? (
-          profiles.map((profile) => {
+        {filteredProfiles.length > 0 ? (
+          filteredProfiles.map((profile) => {
             const name = profile?.userId?.name || "Unknown User";
             const username = profile?.userId?.username || "";
             const currentPost = profile?.currentPost || "No current position available";
@@ -42,7 +51,7 @@ export default function DiscoverPage() {
 
             return (
               <div
-                key={profile?.userId?._id || Math.random()}
+                key={profile?.userId?._id }
                 className="bg-white p-5 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col cursor-pointer"
                 onClick={() => handleNavigate(username)}
               >
@@ -77,7 +86,7 @@ export default function DiscoverPage() {
                     {/* Buttons */}
                     <div className="mt-4 flex flex-wrap gap-2">
                       <button
-                        onClick={(e) => e.stopPropagation()} // Prevent card click
+                        onClick={(e) => {sendConection(profile?.userId?._id); e.stopPropagation()}} // Prevent card click
                         className="flex-1 min-w-[90px] bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition"
                       >
                         Connect

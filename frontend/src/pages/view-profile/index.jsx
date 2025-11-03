@@ -17,7 +17,7 @@ const ViewProfile = () => {
   useEffect(() => {
     if (username) {
       dispatch(userDetail(username));
-      console.log("Fetching user:", username);
+      console.log(user)
     }
   }, [dispatch, username]);
 

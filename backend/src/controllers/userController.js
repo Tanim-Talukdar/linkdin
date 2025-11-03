@@ -22,12 +22,12 @@ export const register = async (req, res) => {
     const existingUsername = await User.findOne({ username });
     if (existingUsername) return res.status(400).json({ message: "Username already taken" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
         name,
         email,
-        password: hashedPassword,
+        password: password,
         username
     });
 
@@ -166,17 +166,17 @@ export const sendConnectionRequest = async (req, res) => {
     const { CryptoToken, connectionId } = req.body;
     if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is  not available" });
 
-    const user = User.findOne({CryptoToken});
+    const user = await User.findOne({CryptoToken: CryptoToken});
     if(!user) return res.status(404).json({message: "User Not Found"});
 
-    const connectionUser = User.findOne({connectionId});
+    const connectionUser = await User.findById(connectionId);
     if(!connectionUser) return res.status(404).json({message: "User Not Found"});
 
     const existingRequest = await ConnectionModel.findOne({
         userId: user._id,
         connectionId: connectionUser._id
     })
-    if(!existingRequest) return res.status(404).json({message: "already exist"});
+    if(existingRequest) return res.status(404).json({message: "already exist"});
     const newConnection = new ConnectionModel({
         userId: user._id,
         connectionId: connectionUser._id

@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getUserAndProfile } from "@/config/redux/action/authAction";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const authState = useSelector((state) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const router = useRouter();
   const dispatch = useDispatch();
     useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,6 +18,13 @@ export default function Navbar() {
   }, [ authState.profileFetched, dispatch]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
+
+    const handleNavigate = (username) => {
+    if (username) {
+      router.push(`/view-profile?username=${username}`);
+    }
+  };
+
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -32,25 +40,25 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-6">
           {authState.profileFetched ? (
             <>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-500">
+              <div className="flex items-center gap-3" onClick={() => handleNavigate(authState.myProfile.userId.username)}>
+                <div className="w-10 h-10 rounded-full cursor-pointer overflow-hidden border-2 border-teal-500">
                   <Image
-                    src={authState.user.userId.profilePicture?.path || "/default.jpg"}
+                    src={authState.myProfile.userId.profilePicture?.path || "/default.jpg"}
                     alt="Profile"
                     width={40}
                     height={40}
                     className="object-cover"
                   />
                 </div>
-                <p className="text-gray-700 font-medium">
-                  Hey {authState.user.userId.name}
+                <p className="text-gray-700 font-medium cursor-pointer">
+                  Hey {authState.myProfile.userId.name}
                 </p>
               </div>
               <Link
-                href="/profile"
+                href="/edit"
                 className="px-4 py-2 bg-teal-500 text-white rounded-lg shadow hover:bg-teal-600 transition"
               >
-                Profile
+                Edit Your Profile
               </Link>
             </>
           ) : (
@@ -120,7 +128,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-500">
                   <Image
-                    src={authState?.user?.userId?.profilePicture?.path || "/default.jpg"}
+                    src={authState?.myProfile?.userId?.profilePicture?.path || "/default.jpg"}
                     alt="Profile"
                     width={40}
                     height={40}
@@ -128,7 +136,7 @@ export default function Navbar() {
                   />
                 </div>
                 <p className="text-gray-700 font-medium">
-                  Hey {authState.user.userId.name}
+                  Hey {authState.myProfile.userId.name}
                 </p>
               </div>
               <Link
