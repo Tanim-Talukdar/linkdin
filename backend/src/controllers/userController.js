@@ -12,7 +12,9 @@ dotenv.config();
 // const JwtSecret = process.env.JWT_SECRET ;
 
 export const register = async (req, res) => {
-  const { name, email, password, username } = req.body;
+    const {name, email ,password, username } = req.body;
+    console.log(password);
+    if(!name || !email || !password || !username ) return res.status(400).json({message: "All field are required"});
 
   if (!name || !email || !password || !username)
     return res.status(400).json({ message: "All field are required" });
@@ -39,9 +41,33 @@ export const register = async (req, res) => {
   const profile = new Profile({ userId: user._id });
   await profile.save();
 
-  return res.status(201).json({
-    message: "User created successfully",
-  });
+export const login = async (req, res) => {
+
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(404).json({ message: "Email and password are required" });
+    }
+console.log(password);
+    const user = await User.findOne({ email }); 
+    if (!user) {
+        return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // const isMatch = await bcrypt.compare(password, user.password);
+    // if (!isMatch) {
+    //     return res.status(400).json({ message: "Invalid email or password" });
+    // }
+    
+    const CryptoToken = crypto.randomBytes(32).toString("hex")
+    
+    user.CryptoToken = CryptoToken;
+    await user.save();
+
+    
+    return res.status(201).json({
+        message: "User logged in successfully",
+        CryptoToken
+    });
 };
 
 export const login = async (req, res) => {
@@ -240,34 +266,20 @@ export const myConnections = async (req, res) => {
 };
 
 export const acceptConnections = async (req, res) => {
-  const { CryptoToken, requestId, action_type } = req.body;
+    const { CryptoToken,requestId, action_type } = req.body;
+    if (!CryptoToken) return res.status(400).json({ message: "CryptoToken is not available" });
 
-  if (!CryptoToken) {
-    return res.status(400).json({ message: "CryptoToken is not available" });
-  }
+    const user = User.findOne({CryptoToken});
+    if(!user) return res.status(404).json({message: "User Not Found"});
 
-  const user = await User.findOne({ CryptoToken });
-  if (!user) {
-    return res.status(404).json({ message: "User Not Found" });
-  }
+    const connection = await ConnectionModel.find({_Id: requestId})
+    if(!connection) return res.status(404).json({message: "Connection Not Found"});
+    if(connection.userId.toString() !== user._id.toString()) return res.status(404).json({message: "invalid request"});
+    if(action_type === "accept") {
+        connection.status_accepted= true
+        await connection.save();
+        return res.status(200).json({message: "connection accepted"});
+    }
+    return  res.json({message: "connection not accepted"});
 
-  // Find connection by ID
-  const connection = await ConnectionModel.findById(requestId);
-  if (!connection) {
-    return res.status(404).json({ message: "Connection Not Found" });
-  }
-
-  // Compare ObjectIds as strings
-  if (connection.connectionId.toString() !== user._id.toString()) {
-    return res.status(403).json({ message: "Invalid request" });
-  }
-
-  // Handle accept action
-  if (action_type === "accept") {
-    connection.status_accepted = true; 
-    await connection.save();
-    return res.status(200).json({ message: "Connection accepted", connection });
-  }
-
-  return res.status(400).json({ message: "Invalid action_type" });
-};
+}
