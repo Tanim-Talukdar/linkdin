@@ -142,9 +142,9 @@ export const uploadProfilePicture = createAsyncThunk(
   }
 );
 
-/*  Update User Profile (Basic Info) */
-export const updateUserProfile = createAsyncThunk(
-  "user/updateUserProfile",
+/*  Update User (Basic Info) */
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
   async (data, thunkApi) => {
     try {
       const response = await client.post("/profile/update", data);
@@ -196,7 +196,8 @@ export const getSentConnections = createAsyncThunk(
   "user/getSentConnections",
   async (CryptoToken, thunkApi) => {
     try {
-      const response = await client.post("/connections/sent", { CryptoToken });
+      const response = await client.get(`/connection/sent/${CryptoToken}`);
+      console.log(response.data);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       return thunkApi.rejectWithValue(
@@ -211,7 +212,7 @@ export const myConnections = createAsyncThunk(
   "user/myConnections",
   async (CryptoToken, thunkApi) => {
     try {
-      const response = await client.post("/connections/my", { CryptoToken });
+      const response = await client.get(`/connection/my/${CryptoToken}`);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       return thunkApi.rejectWithValue(
@@ -226,7 +227,7 @@ export const acceptConnections = createAsyncThunk(
   "user/acceptConnections",
   async ({ CryptoToken, requestId, action_type }, thunkApi) => {
     try {
-      const response = await client.post("/connections/accept", {
+      const response = await client.post("/connection/accept", {
         CryptoToken,
         requestId,
         action_type,
