@@ -5,8 +5,8 @@ import wrapAsync from "../utils/wrapAsync.js";
 const router = Router();
 
 router.post("/send", wrapAsync(sendConnectionRequest));
-router.get("/my", wrapAsync(myConnections));
-router.get("/sent", wrapAsync(getSentConnetion));
+router.get("/my/:CryptoToken", wrapAsync(myConnections));
+router.get("/sent/:CryptoToken", wrapAsync(getSentConnetion));
 router.post("/accept", wrapAsync(acceptConnections));
 
 export default router;
