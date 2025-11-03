@@ -11,10 +11,9 @@ dotenv.config();
 
 // const JwtSecret = process.env.JWT_SECRET ;
 
+
 export const register = async (req, res) => {
-    const {name, email ,password, username } = req.body;
-    console.log(password);
-    if(!name || !email || !password || !username ) return res.status(400).json({message: "All field are required"});
+  const { name, email, password, username } = req.body;
 
   if (!name || !email || !password || !username)
     return res.status(400).json({ message: "All field are required" });
@@ -41,33 +40,9 @@ export const register = async (req, res) => {
   const profile = new Profile({ userId: user._id });
   await profile.save();
 
-export const login = async (req, res) => {
-
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(404).json({ message: "Email and password are required" });
-    }
-console.log(password);
-    const user = await User.findOne({ email }); 
-    if (!user) {
-        return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    // const isMatch = await bcrypt.compare(password, user.password);
-    // if (!isMatch) {
-    //     return res.status(400).json({ message: "Invalid email or password" });
-    // }
-    
-    const CryptoToken = crypto.randomBytes(32).toString("hex")
-    
-    user.CryptoToken = CryptoToken;
-    await user.save();
-
-    
-    return res.status(201).json({
-        message: "User logged in successfully",
-        CryptoToken
-    });
+  return res.status(201).json({
+    message: "User created successfully",
+  });
 };
 
 export const login = async (req, res) => {
