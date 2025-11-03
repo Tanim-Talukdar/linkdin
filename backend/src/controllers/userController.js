@@ -181,8 +181,12 @@ export const downloadUserInfo = async (req, res) => {
     "userId",
     "name email username profilePicture"
   );
-  const outputPath = await convertUserDataTOPDF(userProfile);
-  return res.json({ message: outputPath });
+
+  if (!userProfile) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  await convertUserDataTOPDF(userProfile, res);
 };
 
 export const sendConnectionRequest = async (req, res) => {
