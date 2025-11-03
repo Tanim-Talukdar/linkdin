@@ -12,7 +12,7 @@ const PostCard = ({ post, onLike }) => {
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
 
-  const isOwner = authState.user?.userId?._id === post?.userId?._id;
+  const isOwner = authState.myProfile?.userId?._id === post?.userId?._id;
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this post?")) return;

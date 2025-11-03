@@ -67,7 +67,7 @@ export default function Dashboard() {
 
   const onLike = (id) => dispatch(likeIncreaments(id));
 
-  if (!authState?.user || !authState?.user?.userId) {
+  if (!authState?.myProfile || !authState?.myProfile?.userId) {
     return (
       <DashboardLayout authState={authState}>
         <div className="flex items-center justify-center h-screen">

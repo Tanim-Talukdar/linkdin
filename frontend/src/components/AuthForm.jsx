@@ -6,6 +6,7 @@ import { loginUser, registerUser } from "@/config/redux/action/authAction/index"
 import { formFields } from "@/constants/formFields";
 import { useRouter } from "next/router";
 import { reset } from "@/config/redux/reducer/authReducer/authReducer";
+import Input from "./input";
 
 
 

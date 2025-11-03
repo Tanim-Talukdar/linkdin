@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadProfilePicture, updateUserProfile, getUserAndProfile, UpdateProfileData, getAllUser } from "../controllers/userController.js";
+import { uploadProfilePicture, updateUserProfile, getUserAndProfile, UpdateProfileData, getAllUser, userDetail } from "../controllers/userController.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import multer from "multer";
 import { storage } from "../cloudinary.js";
@@ -13,5 +13,6 @@ router.post("/update", wrapAsync(updateUserProfile));
 router.get("/get", wrapAsync(getUserAndProfile));
 router.post("/update_data", wrapAsync(UpdateProfileData));
 router.get("/allUser", wrapAsync(getAllUser))
+router.get("/userDetail", wrapAsync(userDetail))
 
 export default router;
