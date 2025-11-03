@@ -70,7 +70,7 @@ export default function Navbar() {
                 Login
               </Link>
               <Link
-                href="/register"
+                href="/login"
                 className="px-4 py-2 border-2 border-teal-500 text-teal-500 rounded-lg hover:bg-teal-500 hover:text-white transition"
               >
                 Register
