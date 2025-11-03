@@ -13,7 +13,7 @@ dotenv.config();
 
 export const register = async (req, res) => {
     const {name, email ,password, username } = req.body;
-    
+    console.log(password);
     if(!name || !email || !password || !username ) return res.status(400).json({message: "All field are required"});
 
     const existingEmail = await User.findOne({ email });
@@ -47,7 +47,7 @@ export const login = async (req, res) => {
     if (!email || !password) {
         return res.status(404).json({ message: "Email and password are required" });
     }
-
+console.log(password);
     const user = await User.findOne({ email }); 
     if (!user) {
         return res.status(400).json({ message: "Invalid email or password" });
